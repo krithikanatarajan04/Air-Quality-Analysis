@@ -1,9 +1,10 @@
 //Define data
-const AQI = d3.csv("cdc_2023.csv");
-AQI.filter(function(d)){return d.StateDesc == Alaska}
+const AQI = d3.csv("annual_aqi_by_county.csv");
+
 
 AQI.then(function(data) {
 
+  
   // Code in here
   // create SVG
   let 
@@ -26,13 +27,13 @@ AQI.then(function(data) {
 
   let yScale = d3.scaleBand()
   .domain(
-    data.map(d => d.Data_Value)
+    data.map(d => d.State)
   ) 
   .range([margin.left-100, width - margin.right+50])
   .padding(0.1);
 
    let xScale = d3.scaleLinear()
-  .domain([7, 0])
+  .domain([1000, 0])
   .range([height - margin.bottom-50, margin.top+68]);
 
   let yAxis = svg
@@ -69,9 +70,9 @@ AQI.then(function(data) {
       .enter()
       .append('rect')
         .attr('x', d => margin.left)
-        .attr('y', d => yScale(d.LocationName))
+        .attr('y', d => yScale(d.State))
         .attr('height', yScale.bandwidth())
-        .attr('width', d => xScale(d.Data_Value) - margin.left)
+        .attr('width', d => xScale(d.Good_Days) - margin.left)
         .attr('fill', 'steelblue');
 
 
