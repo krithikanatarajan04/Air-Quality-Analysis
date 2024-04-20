@@ -62,7 +62,7 @@ AQI.then(function(data) {
       .attr('y', 30)
       .style('stroke', 'black')
       .style("font-size", "15px")
-      .text('Data Value');
+      .text('Max AQI');
 
   let bar = svg
     .selectAll('rect')
@@ -72,7 +72,7 @@ AQI.then(function(data) {
         .attr('x', d => margin.left)
         .attr('y', d => yScale(d.State))
         .attr('height', yScale.bandwidth())
-        .attr('width', d => xScale(d.Good_Days) - margin.left)
+        .attr('width', d => xScale(d.Max_AQI) - margin.left)
         .attr('fill', 'steelblue');
 
 
