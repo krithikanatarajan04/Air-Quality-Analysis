@@ -1,18 +1,313 @@
 <!DOCTYPE html>
-<html lang='en'>
-
+<html lang="en">
 <head>
-  <meta charset='UTF-8'>
-  <title>D3 Barchart With Transitions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Air Quality Analysis</title>
+    <link href="style.css" rel="stylesheet" />
 </head>
-
 <body>
-  <h3>
-    Histogram for the Max AQI of US states counties
-  </h3>
-  <svg id = "plot"></svg>
-  <script src='https://d3js.org/d3.v7.min.js'></script>
-  <script src='main.js'></script>
-</body>
+    
+    <h1> US Air Quality Analysis</h1>
 
+    <h3>Overall Introduction</h3>
+
+    <p> Air quality is a pivotal environmental issue that directly 
+        impacts public health and well-being. Every year, millions 
+        of people worldwide are affected by poor air quality, which 
+        is linked to a range of severe health problems. According to 
+        the World Health Organization (WHO), the combined effects of 
+        ambient air pollution and household air pollution are associated 
+        with 6.7 million premature deaths annually. This highlights the 
+        critical need for rigorous air quality management. Criteria pollutants, 
+        including ozone (O3), nitrogen dioxide (NO2), carbon monoxide (CO), 
+        sulfur dioxide (SO2), and particulate matter (PM2.5 and PM10), are 
+        particularly concerning due to their prevalence and health impacts. 
+        Exposure to high levels of these pollutants can lead to acute 
+        respiratory problems, cardiovascular diseases, worsened asthma, 
+        and other health issues. Specifically, WHO estimates that in 2019, 
+        some 37% of outdoor air pollution-related premature deaths were due 
+        to ischemic heart disease and stroke, while 18% and 23% of deaths were 
+        due to chronic obstructive pulmonary disease and acute lower 
+        respiratory infections respectively, and 11% were due to cancer 
+        within the respiratory tract.</p>
+
+    <p> This project aims to provide a comprehensive analysis of these pollutants 
+        in the United States from 2000 to 2023, offering insights into their 
+        concentrations, distribution, and trends over time. By understanding 
+        the dynamics of air quality, this study seeks to inform public policy, 
+        contribute to environmental health research, and pave the way for effective 
+        interventions that could dramatically reduce the health burdens associated 
+        with air pollution.</p>
+
+    <p>Our sources include the World Health Organization:
+        <a href=https://www.who.int/health-topics/air-pollution#tab=tab_1>Air Pollution</a>,
+        <a href=https://www.who.int/news-room/fact-sheets/detail/ambient-(outdoor)-air-quality-and-health>Ambient Outdoor Air Pollution</a>
+         and the EPA:
+         <a href=https://www.epa.gov/outdoor-air-quality-data/air-data-basic-information#other>Air Data Basic Information</a>.</p>
+
+    <h3>Introduction to the data</h3>
+
+    <p> Our analysis utilizes information from the United States Environmental 
+        Protection Agency and the Center for Disease Control.</p>  
+    <p>EPA:</p>
+    <p>We concatenated annual summary files that contain information about criteria 
+        pollutants by county from the years 2000 up until 2023.  This resulted in a 
+        file with 25,000 rows and 18  columns. The relevant columns are listed below.</p>
+
+        <div class="center">
+        <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-0lax">Variable Name</th>
+                <th class="tg-0lax">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tg-0lax">State</td>
+                <td class="tg-0lax">State name</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">County</td>
+                <td class="tg-0lax">Country Name</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Year</td>
+                <td class="tg-0lax">Year the data was collected from</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Days AQI</td>
+                <td class="tg-0lax">Number of days AQI was recorded</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Good Days</td>
+                <td class="tg-0lax">Number of days with AQI lower than 50</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Moderate Days</td>
+                <td class="tg-0lax">Number of days with AQI between 51 - 100</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Unhealthy Days for sensitive groups</td>
+                <td class="tg-0lax">Number of days with AQI between 101 - 150</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Unhealthy Days</td>
+                <td class="tg-0lax">Number days with AQI between 151 - 200</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Very Unhealthy Days</td>
+                <td class="tg-0lax">Number of days with AQI between 201 - 300</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Hazardous Days</td>
+                <td class="tg-0lax">Number of days with AQI between 301 and higher</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Max AQI</td>
+                <td class="tg-0lax">Highest AQI for the year</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Median AQI</td>
+                <td class="tg-0lax">Median AQI for the year</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Days CO</td>
+                <td class="tg-0lax">Number of days with any Carbon Monozide amounts higher than federal limit</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Days NO2</td>
+                <td class="tg-0lax">Number of days with any Nitrogen Dioxide amounts higher than federal limit</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Days Ozone</td>
+                <td class="tg-0lax">Number of days with any zone amounts higher than federal limit</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Days PM 2.5</td>
+                <td class="tg-0lax">Number of days with any fine particulate matter with a diameter of 2.5 ppm amounts higher than federal limit</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Days PM 10</td>
+                <td class="tg-0lax">Number of days with any fine particulate matter with a diameter of 10 ppm amounts higher than federal limit</td>
+              </tr>
+            </tbody>
+            </table>
+        </div>
+    <p>CDC:</p>
+    <p>We used public health data report from the year 2022. 
+        This dataset contains 2.05 million rows and 55 columns.
+        The four relavant columns used are shown below.</p>
+
+        <div class="center">
+        <table class="tg">
+            <thead>
+              <tr>
+                <th class="tg-0lax">Variable Name</th>
+                <th class="tg-0lax">Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="tg-0lax">StateAbbr</td>
+                <td class="tg-0lax">State Abbreviation</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">MeasureID</td>
+                <td class="tg-0lax">Health outcome being measured</td>
+              </tr>
+              <tr>
+                <td class="tg-0lax">Data_Value</td>
+                <td class="tg-0lax">Percent of population with health outcome</td>
+              </tr>
+            </tbody>
+            </table>
+        </div>
+
+        <h3>Median AQI Over Time</h3>
+        <p>To begin, we created a high-level visualization that maps the changes in the 
+            median Air Quality Index (AQI) over time across the United States. The AQI 
+            serves as a gauge of air quality, where lower values indicate cleaner air. Our 
+            analysis reveals that the highest median AQI occurred in 2007, while the lowest 
+            values were observed in 2009 and 2020. The significant improvement in air quality 
+            from 2007 to 2009 can be attributed to the 2008 financial crisis, during which 
+            widespread job losses led to reduced commuting and, consequently, fewer emissions. 
+            Similarly, the sharp decrease in AQI in 2020 coincided with the global COVID-19 
+            pandemic, which saw travel restrictions and reduced economic activity contributing
+             to markedly cleaner air. These findings emphasize the direct impact of human 
+             mobility and economic activity on air quality.
+        </p>
+
+            <div class = 'center'>
+                <iframe src="annual_trend.png" width="90%" height="600px" frameborder="0"></iframe>
+            </div>
+
+        <h3>Heat Map of Median AQI</h3>
+        
+        <div class = 'container'>
+            <div class = 'image'>
+                <!-- <iframe src="histogram/index.html" width="100%" height="400px" frameborder="0"></iframe>-->
+                <iframe src="map.html" width="100%" height="400px" frameborder="0"></iframe>
+            </div>
+            <div class = 'text'>
+                <p>This interactive visualization utilizes plotly to show the median air quality 
+                    index(AQI) by state over time from 2000 to 2023. The darker the shade of red
+                     indicates a higher AQI. By pressing the play button, the user can watch as the 
+                     median AQI changes over time by state. Using the slider, the user can go directly
+                      to a specific year to observe as well. The user can hover over each state to see 
+                      the year, state name, and median air quality index.
+                </p>
+                <p>From this visualization, some interesting insights are: first, the upper northwest 
+                    portion of the country tends to have better air quality compared to other regions.
+                     The south east tends to have the poorest air quality. Another important trend to 
+                     note is that as time has passed, the western part of the country’s air quality has 
+                     gotten a bit worse. This is a reflection of increased forest fires in the western
+                      part of the United States and as result, there are elevated levels of particulate 
+                      matter of 2.5 diameter, ozone, and nitrogen dioxide. 
+                </p>
+            </div>            
+        </div>
+        
+        <h3> Feature Importance</h3>
+
+        <div class = 'image'>
+            <img src="top10feature.png" width="100%" height="500px" frameborder="0"></img>
+        </div>
+
+        <div class = 'container'>
+            
+            <div class = 'text'>
+                <p> To gain a deeper understanding of the factors predicting the number of 
+                    days with varying levels of air quality—from good to hazardous—we employed
+                     a random forest regression model supplemented by cross-validation. During
+                      preprocessing, we explored the impact of geographical variations by one-hot 
+                      encoding states. However, the encoded state variables did not significantly 
+                      influence the model's predictions, as reflected by their negligible feature 
+                      importances. The target variables were the count of days classified as good, 
+                      moderate, unhealthy for sensitive groups, unhealthy, and hazardous based on 
+                      air quality. The cross-validation results revealed a mean R-squared value of
+                       0.779 and a mean MSE of approximately 50.265, indicating a robust model with 
+                       substantial predictive capabilities. 'Median AQI', 'Days PM2.5', and 'Days Ozone' 
+                       emerged as the most influential predictors, reinforcing the critical role of specific 
+                       pollutants in determining air quality. The 'Year' variable held minimal importance, 
+                       suggesting that environmental conditions on a day-to-day basis are more significant 
+                       than the specific year's data.
+                </p>
+                <p>
+                    These results led us to reevaluate the feature selection, opting to categorize 
+                    the United States into broader regions rather than by individual states. This 
+                    approach reduced the model's complexity without sacrificing its predictive power. 
+                    The feature importance graph further highlighted that median air quality indices
+                     and the number of days with elevated levels of PM2.5 and ozone are more indicative
+                      of air quality than the regions, emphasizing that air quality interventions should 
+                      prioritize the management of these pollutants. As elevated levels of PM 2.5 and ozone 
+                      can occur from forest fires, air pollution and global warming, this further 
+                      corroborates the previous interactive visualization depicting how median AQI 
+                      has changed over time. By shedding light on these factors, our model directs 
+                      attention to actionable environmental policies and initiatives that could be 
+                      most effective in improving air quality.
+                </p>
+            </div>
+            <div class = 'image'>
+                <img src="featureimportance.png" width="100%" height="500px" frameborder="0"></img>
+            </div>   
+        </div>
+
+        <p>We have also create an interactive bar plot so that 
+            our users can select a couple of states 
+            to compare prevalance of disease.
+        </p>
+
+        <div class = 'center'>
+            <iframe src="disease_chart.html" width="20%" height="550px" frameborder="0"></iframe>
+        </div>
+
+        <p>For our visualization using Altair, we decided to plot a bar graph that shows the 
+            prevalence of diseases by state. We chose to visualize diseases that have a strong 
+            positive correlation with air pollution, such as cancer, chronic asthma, chronic 
+            heart disease, and stroke. The interactive features in this visualization include: 
+            tooltip that shows the data value of each disease within a certain county, and a 
+            dropdown where you can select a state. The marks and channels are bars and length. 
+        </p>
+
+        <h3>Max AQI across US</h3>
+
+        <p>
+            In this visualization we try to explore the Max AQI between
+            states. Using width or x-axis and color we are able to see which states 
+            have the highest AQI. It shows that California has the highest Max AQI which
+            is consistent with the heat map as well.  
+        </p>
+
+        <div class = 'center'>
+            <iframe src="d3.html" width="95%" height="900px" frameborder="0"></iframe>
+        </div>
+
+        <h3>Summary and additional work</h3>
+
+        <p>
+            In this visualization analysis, we were able to explore the different air quality particulates 
+            and their impact on health across the US. We noticed some patterns. There was lower AQI during 
+            periods of less travel that occured due to financial or pandemic reasons. The northwest portion 
+            of the US has a lower AQI compared to the rest of the country. Ozone and fine particulate matter
+            influence AQI the most. California Counties have the worst AQI and the highest prevalence of disease.
+        </p>
+
+        <p> In the future, we would like to:</p>
+        <ul>
+            <li>integrate wind and temperature data</li>
+            <li>develop specific regulatory measured based on analysis findings</li>
+            <li>trying other ML models to yeaild better prediction results</li>
+            <li>implement targeted interventions in areas with poor air quality</li>
+
+
+        <p>If you are interested in the project and want to share more
+            opinions or resource about the project, please contact:
+        </p>
+        <p> Amulya Jayam (jayam.a@northeastern.edu)</p>
+        <p> Sarayu Pininti (pininti.s@northeastern.edu)</p>
+        <p> Krithika Natrajan (natarajan.kr@northeastern.edu)</p>
+
+</body>
 </html>
